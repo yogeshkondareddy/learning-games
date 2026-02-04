@@ -161,6 +161,7 @@ const words = [
   { word: "book", emoji: "📘" },
   { word: "bag", emoji: "🎒" },
 
+  { word: "eye", emoji: "👁️" },
   { word: "ear", emoji: "👂" },
   { word: "hand", emoji: "✋" },
   { word: "leg", emoji: "🦵" },
@@ -264,11 +265,11 @@ if (recognition) {
 
       play(correctSound);
 
-      // HARD hide button
+      // Hide button only
       listenBtn.style.display = "none";
       listenBtn.disabled = true;
 
-      wordDiv.textContent = "";
+      // Keep word visible
       emojiDiv.textContent = current.emoji;
 
       statusDiv.textContent = "🌟 Great job!";
