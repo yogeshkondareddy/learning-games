@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- IMPORTANT: Fixes emoji corruption -->
+  <meta charset="UTF-8">
+
+  <title>Read & Learn</title>
+
+  <style>
+    body {
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Noto Color Emoji",
+        Arial,
+        sans-serif;
+
+      text-align: center;
+      margin-top: 70px;
+      background: #f2f9ff;
+    }
+
+    h1 {
+      font-size: 42px;
+    }
+
+    #word {
+      font-size: 70px;
+      margin: 20px;
+      font-weight: bold;
+    }
+
+    #emoji {
+      font-size: 100px;
+      margin: 20px;
+      height: 110px;
+
+      font-family:
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Noto Color Emoji",
+        sans-serif;
+    }
+
+    button {
+      font-size: 24px;
+      padding: 15px 40px;
+      border-radius: 12px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #43a047;
+    }
+
+    #status {
+      font-size: 26px;
+      margin-top: 25px;
+      min-height: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>📖 Read & Learn</h1>
+
+<div id="word"></div>
+
+<div id="emoji"></div>
+
+<button onclick="startListening()">🎤 Read Aloud</button>
+
+<div id="status"></div>
+
+<!-- Sounds -->
+<audio id="correctSound" src="correct.mp3" preload="auto"></audio>
+<audio id="wrongSound" src="wrong.mp3" preload="auto"></audio>
+
+<script>
+
+/* ===============================
+   WORD LIST
+   =============================== */
+
+const words = [
+
+  { word: "cat", emoji: "🐱" },
+  { word: "dog", emoji: "🐶" },
+  { word: "cow", emoji: "🐮" },
+  { word: "pig", emoji: "🐷" },
+  { word: "duck", emoji: "🦆" },
+  { word: "fish", emoji: "🐟" },
+  { word: "lion", emoji: "🦁" },
+  { word: "bear", emoji: "🐻" },
+  { word: "frog", emoji: "🐸" },
+
+  { word: "apple", emoji: "🍎" },
+  { word: "banana", emoji: "🍌" },
+  { word: "cake", emoji: "🎂" },
+  { word: "milk", emoji: "🥛" },
+  { word: "bread", emoji: "🍞" },
+  { word: "rice", emoji: "🍚" },
+
+  { word: "sun", emoji: "☀️" },
+  { word: "moon", emoji: "🌙" },
+  { word: "star", emoji: "⭐" },
+  { word: "tree", emoji: "🌳" },
+  { word: "cloud", emoji: "☁️" },
+
+  { word: "ball", emoji: "⚽" },
+  { word: "car", emoji: "🚗" },
+  { word: "bus", emoji: "🚌" },
+  { word: "bike", emoji: "🚲" },
+  { word: "book", emoji: "📘" },
+  { word: "bag", emoji: "🎒" },
+
+  { word: "ear", emoji: "👂" },
+  { word: "hand", emoji: "✋" },
+  { word: "leg", emoji: "🦵" },
+  { word: "foot", emoji: "🦶" },
+
+  { word: "run", emoji: "🏃" },
+  { word: "jump", emoji: "🤾" },
+  { word: "walk", emoji: "🚶" },
+  { word: "read", emoji: "📖" },
+  { word: "write", emoji: "✍️" },
+
+  { word: "red", emoji: "🔴" },
+  { word: "blue", emoji: "🔵" },
+  { word: "green", emoji: "🟢" },
+  { word: "yellow", emoji: "🟡" },
+
+  { word: "boy", emoji: "👦" },
+  { word: "girl", emoji: "👧" },
+  { word: "dad", emoji: "👨" },
+  { word: "mom", emoji: "👩" },
+  { word: "happy", emoji: "😄" },
+  { word: "love", emoji: "❤️" }
+
+];
+
+/* ===============================
+   GAME LOGIC
+   =============================== */
+
+let remaining = [...words];
+let current = null;
+
+const wordDiv = document.getElementById("word");
+const emojiDiv = document.getElementById("emoji");
+const statusDiv = document.getElementById("status");
+
+const correctSound = document.getElementById("correctSound");
+const wrongSound = document.getElementById("wrongSound");
+
+function play(sound) {
+  sound.pause();
+  sound.currentTime = 0;
+  sound.play();
+}
+
+function showWord() {
+
+  if (remaining.length === 0) {
+    remaining = [...words];
+  }
+
+  const i = Math.floor(Math.random() * remaining.length);
+
+  current = remaining.splice(i, 1)[0];
+
+  wordDiv.textContent = current.word;
+  emojiDiv.textContent = "";
+  statusDiv.textContent = "";
+}
+
+showWord();
+
+/* ===============================
+   SPEECH RECOGNITION
+   =============================== */
+
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+
+const recognition = SpeechRecognition
+  ? new SpeechRecognition()
+  : null;
+
+if (recognition) recognition.lang = "en-US";
+
+function startListening() {
+  if (!recognition) return;
+  statusDiv.textContent = "🎧 Listening...";
+  recognition.start();
+}
+
+if (recognition) {
+
+  recognition.onresult = function(event) {
+
+    const spoken = event.results[0][0].transcript
+      .toLowerCase()
+      .trim();
+
+    const expected = current.word.toLowerCase();
+
+    if (spoken === expected) {
+
+      play(correctSound);
+
+      wordDiv.textContent = "";
+      emojiDiv.textContent = current.emoji;
+
+      statusDiv.textContent = "🌟 Great job!";
+
+      setTimeout(showWord, 3000);
+
+    } else {
+
+      play(wrongSound);
+
+      statusDiv.textContent =
+        "❌ Try again (You said: " + spoken + ")";
+    }
+  };
+
+  recognition.onerror = function() {
+    play(wrongSound);
+    statusDiv.textContent = "⚠️ Try again";
+  };
+}
+
+</script>
+
+</body>
+</html>
+
