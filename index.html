@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
 
-  <!-- IMPORTANT: Fixes emoji corruption -->
+  <!-- Fix emoji encoding -->
   <meta charset="UTF-8">
+
+  <!-- Mobile scaling -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Read & Learn</title>
 
   <style>
+
     body {
       font-family:
         -apple-system,
@@ -19,25 +23,33 @@
         Arial,
         sans-serif;
 
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      background: linear-gradient(#e3f2fd, #ffffff);
       text-align: center;
-      margin-top: 70px;
-      background: #f2f9ff;
     }
 
     h1 {
-      font-size: 42px;
+      font-size: clamp(24px, 6vw, 40px);
+      margin-bottom: 15px;
     }
 
     #word {
-      font-size: 70px;
-      margin: 20px;
+      font-size: clamp(48px, 12vw, 80px);
       font-weight: bold;
+      margin: 15px 0;
     }
 
     #emoji {
-      font-size: 100px;
-      margin: 20px;
-      height: 110px;
+      font-size: clamp(70px, 18vw, 110px);
+      height: 120px;
 
       font-family:
         "Apple Color Emoji",
@@ -47,24 +59,33 @@
     }
 
     button {
-      font-size: 24px;
-      padding: 15px 40px;
-      border-radius: 12px;
+      font-size: clamp(18px, 5vw, 26px);
+      padding: 14px 30px;
+      border-radius: 14px;
       border: none;
+
       background: #4CAF50;
       color: white;
+
+      margin-top: 15px;
+
+      width: 80%;
+      max-width: 320px;
+
       cursor: pointer;
     }
 
-    button:hover {
-      background: #43a047;
+    button:active {
+      transform: scale(0.97);
     }
 
     #status {
-      font-size: 26px;
-      margin-top: 25px;
+      font-size: clamp(16px, 4.5vw, 24px);
+      margin-top: 15px;
       min-height: 30px;
+      padding: 0 10px;
     }
+
   </style>
 </head>
 
@@ -76,7 +97,7 @@
 
 <div id="emoji"></div>
 
-<button onclick="startListening()">🎤 Read Aloud</button>
+<button onclick="startListening()">🎤 Tap & Read</button>
 
 <div id="status"></div>
 
@@ -199,6 +220,7 @@ if (recognition) recognition.lang = "en-US";
 
 function startListening() {
   if (!recognition) return;
+
   statusDiv.textContent = "🎧 Listening...";
   recognition.start();
 }
@@ -243,4 +265,3 @@ if (recognition) {
 
 </body>
 </html>
-
