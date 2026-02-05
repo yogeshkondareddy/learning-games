@@ -219,6 +219,7 @@ const words = [
 let remaining = [...words];
 let current = null;
 let score = 0;
+let wrongAttempts = 0;
 
 const wordDiv = document.getElementById("word");
 const emojiDiv = document.getElementById("emoji");
@@ -246,6 +247,9 @@ function showWord() {
 
   const i = Math.floor(Math.random() * remaining.length);
   current = remaining.splice(i, 1)[0];
+
+  // Reset wrong attempts for new word
+  wrongAttempts = 0;
 
   // ALWAYS show word
   wordDiv.textContent = current.word;
@@ -319,8 +323,15 @@ if (recognition) {
 
       play(wrongSound);
 
-      statusDiv.textContent =
-        "❌ Try again (You said: " + spoken + ")";
+      wrongAttempts++;
+
+      if (wrongAttempts >= 3) {
+        statusDiv.textContent = "❌ Moving to next word...";
+        setTimeout(showWord, 2000);
+      } else {
+        statusDiv.textContent =
+          "❌ Try again (You said: " + spoken + ")";
+      }
     }
   };
 
