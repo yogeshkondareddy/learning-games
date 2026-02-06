@@ -145,6 +145,7 @@
 <!-- Sounds -->
 <audio id="jumpSound" src="jump.mp3" preload="auto"></audio>
 <audio id="wrongSound" src="wrong.mp3" preload="auto"></audio>
+<audio id="winSound" src="mouse-win.mp3" preload="auto"></audio>
 
 
 <script>
@@ -180,6 +181,7 @@ const statusDiv = document.getElementById("status");
 
 const jumpSound = document.getElementById("jumpSound");
 const wrongSound = document.getElementById("wrongSound");
+const winSound = document.getElementById("winSound");
 
 checkBtn.addEventListener("click", checkAnswer);
 input.addEventListener("keyup", e => {
@@ -315,12 +317,23 @@ function checkAnswer() {
 
   if (position === TOTAL_BLOCKS) {
 
-    questionDiv.textContent = "🎉 YOU WIN! 🎉";
+    // Hide everything except the mouse
+    questionDiv.style.display = "none";
+    input.style.display = "none";
+    checkBtn.style.display = "none";
+    statusDiv.style.display = "none";
 
-    statusDiv.textContent = "Mouse got the cheese! 🧀";
+    // Show only the mouse in the path
+    pathDiv.innerHTML = "";
+    const mouseBlock = document.createElement("div");
+    mouseBlock.className = "block mouse";
+    mouseBlock.textContent = "🐭";
+    mouseBlock.style.fontSize = "48px";
+    mouseBlock.style.height = "80px";
+    pathDiv.appendChild(mouseBlock);
 
-    input.disabled = true;
-    checkBtn.disabled = true;
+    // Play win sound
+    playSound(winSound);
 
     return;
   }
