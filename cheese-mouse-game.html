@@ -224,6 +224,7 @@ function nextTurn() {
 
   statusDiv.textContent = "";
   listenBtn.disabled = false;
+  listenBtn.textContent = "🎤 Read";
 }
 
 
@@ -280,6 +281,7 @@ function startListening() {
 
   statusDiv.textContent = "🎧 Listening...";
   listenBtn.disabled = true;
+  listenBtn.textContent = "🎧 Listening...";
 
   recognition.start();
 }
@@ -329,10 +331,18 @@ if (recognition) {
   };
 
 
-  recognition.onerror = function() {
+  recognition.onerror = function(e) {
 
     statusDiv.textContent = "⚠️ Try again";
     listenBtn.disabled = false;
+    listenBtn.textContent = "🎤 Read";
+  };
+
+  recognition.onend = function() {
+    // Reset button if recognition ends without result
+    if (!listenBtn.disabled) {
+      listenBtn.textContent = "🎤 Read";
+    }
   };
 }
 
